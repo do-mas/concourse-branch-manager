@@ -1,7 +1,10 @@
 ---
 platform: linux
 
-image: docker:///radial/busyboxplus#git
+image_resource:
+  type: docker-image
+  source:
+    repository: radial/busyboxplus
 
 inputs:
 - name: my-repo-branch
