@@ -10,5 +10,6 @@ inputs:
 - name: my-repo-branch
 - name: my-repo-common-resource
 
+
 run:
   path: my-repo-branch/examples/tasks/my-repo-branch-task-script
