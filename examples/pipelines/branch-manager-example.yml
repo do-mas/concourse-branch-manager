@@ -4,11 +4,17 @@ groups:
   jobs:
   - branch-manager
 
+resource_types:
+- name: git-branches
+  type: docker-image
+  source:
+    repository: tracker/git-branches-resource
+
 resources:
 - name: concourse-branch-manager
   type: git
   source:
-    uri: https://github.com/pivotaltracker/concourse-branch-manager.git
+    uri: https://github.com/do-mas/concourse-branch-manager.git
     branch: master
     ignore_paths: [Gemfile, Gemfile.lock]
 
@@ -17,7 +23,7 @@ resources:
   type: git-branches
   source:
     # Set this to the uri of your repo for which you want to dynamically build arbitrary branches
-    uri: https://github.com/pivotaltracker/concourse-branch-manager.git
+    uri: https://github.com/do-mas/concourse-branch-manager.git
     branch_regexp: ".*"
     max_branches: 20
 
@@ -27,7 +33,7 @@ resources:
   type: git
   source:
     # Set this to the uri of your repo containing your resource/job templates for building branches
-    uri: https://github.com/pivotaltracker/concourse-branch-manager.git
+    uri: https://github.com/do-mas/concourse-branch-manager.git
     branch: master
 #    paths: [examples/templates/*]
 
@@ -37,7 +43,7 @@ resources:
   type: git
   source:
     # Set this to the uri of your repo containing your non-secret non-credential config
-    uri: https://github.com/pivotaltracker/concourse-branch-manager.git
+    uri: https://github.com/do-mas/concourse-branch-manager.git
     branch: master
 #    paths: [examples/config/*]
 
@@ -47,7 +53,7 @@ resources:
   type: git
   source:
     # Set this to the uri of your repo containing your non-secret non-credential config
-    uri: https://github.com/pivotaltracker/concourse-branch-manager.git
+    uri: https://github.com/do-mas/concourse-branch-manager.git
     branch: master
 #    paths: [examples/credentials/*]
 
@@ -75,15 +81,9 @@ jobs:
     trigger: true
   - task: manage-branches
     file: concourse-branch-manager/tasks/manage-branches.yml
-    config:
-      params:
-        BRANCH_RESOURCE_TEMPLATE: template-repo/examples/templates/my-repo-branch-resource-template.yml.erb
-        BRANCH_JOB_TEMPLATE: template-repo/examples/templates/my-repo-branch-job-template.yml.erb
-        PIPELINE_COMMON_RESOURCES_TEMPLATE: template-repo/examples/templates/my-repo-common-resources-template.yml.erb
-        CONCOURSE_URL: {{CONCOURSE_URL}}
-        CONCOURSE_USERNAME: {{CONCOURSE_USERNAME}}
-        CONCOURSE_PASSWORD: {{CONCOURSE_PASSWORD}}
-        PIPELINE_LOAD_VARS_FROM_1: config-repo/examples/config/my-repo-branch-manager-config.yml
-        PIPELINE_LOAD_VARS_FROM_2: credentials-repo/examples/credentials/my-repo-branch-manager-credentials.yml
-        PIPELINE_NAME: cbm-example-branches
-        GROUP_PER_BRANCH: true
+    params:
+        BRANCH_RESOURCE_TEMPLATE: template-repo/ci/templates/my-repo-branch-resource-template.yml.erb
+        BRANCH_JOB_TEMPLATE: template-repo/ci/templates/my-repo-branch-job-template.yml.erb
+        CONCOURSE_URL: http://104.196.14.231:8080/
+        CONCOURSE_USERNAME: admin
+        CONCOURSE_PASSWORD: admin
